@@ -3,6 +3,7 @@ const credentials = {secretUser:"user" , secretPassword:"password"}
 const cors = require("cors")
 const express = require("express")
 const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken');
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -42,8 +43,13 @@ app.post('/authorize', (req, res) => {
    console.log(`Password ${password}`)
 
    if(user===credentials.secretUser && password===credentials.secretPassword){
-         console.log("Authorized")
-      res.status(200).send({"STATUS":"SUCCESS"})
+      console.log("Authorized")
+      const token = jwt.sign({
+            data: 'foobar'
+      }, 'your-secret-key-here', { expiresIn: 60 * 60 }); 
+
+      console.log(token)
+      res.status(200).send(token)
   }else{
       console.log("Not authorized")
       res.status(200).send({"STATUS":"FAILURE"})
