@@ -1,12 +1,19 @@
 const credentials = {secretUser:"user" , secretPassword:"password"}
 
-const cors = require("cors")
-const express = require("express")
-const bodyParser = require('body-parser')
+const cors = require("cors");
+const express = require("express");
+const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-
+const https = require ('https');
+const http = require('http');
+const fs = require('fs');
 const app = express()
 const PORT = process.env.PORT || 3000
+
+var options = {
+   key: fs.readFileSync('abels-key.pem'),
+   cert: fs.readFileSync('abels-cert.pem')
+};
 
 app.use(function (req, res, next) {
    res.setHeader('Content-Security-Policy', "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'");
@@ -55,3 +62,7 @@ app.post('/authorize', (req, res) => {
 app.listen(PORT , ()=>{
      console.log(`STARTED LISTENING ON PORT ${PORT}`)
 });
+
+https.createServer(options, app).listen(443, function(){
+      console.log('HTTPS LISTENING ON 433');
+})
